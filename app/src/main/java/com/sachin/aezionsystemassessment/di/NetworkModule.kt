@@ -15,7 +15,7 @@ import retrofit2.create
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    val BASE_URL = "https://api.github.com/users"
+    val BASE_URL = "https://api.github.com/"
 
     @Provides
     fun provideOkHttpClient(): OkHttpClient {

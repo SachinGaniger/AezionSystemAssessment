@@ -4,11 +4,13 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.sachin.aezionsystemassessment.R
 import com.sachin.aezionsystemassessment.databinding.FragmentUserBinding
 import com.sachin.aezionsystemassessment.ui.UserAdapter
@@ -40,36 +42,41 @@ class UserFragment : Fragment(R.layout.fragment_user) {
     }
 
     private fun observeData() {
-        userViewMode.getUsers().observe(viewLifecycleOwner, Observer {
+        userViewMode.getUsers().observe(viewLifecycleOwner, Observer { response ->
 
-//            when(response) {
-//                is Resource.Success -> {
-//                    response.data?.let {
-//                        adapter = UserAdapter(it)
-//                    }
-//                }
-//
-//            }
+            when(response){
+                is Resource.Success ->{
+                    hideProgressbar()
+                    response.data?.let {
+                        adapter = UserAdapter(it)
+                        fragmentUserBinding.rvUsers.layoutManager = LinearLayoutManager(activity)
+                        fragmentUserBinding.rvUsers.adapter = adapter
 
+                    }
+                }
 
+                is Resource.Loading ->{
+                    showProgressBar()
+                }
 
-//                
+                is Resource.Error ->{
+                    hideProgressbar()
+                    response.message?.let {message ->
+                        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
 
-
-
-
+                    }
+                }
+            }
 
         })
     }
 
     private fun showProgressBar() {
-//        fragmentUserBinding.paginationProgressBar.visibility = VISIBLE
+        fragmentUserBinding.progress.visibility = VISIBLE
     }
 
     private fun hideProgressbar() {
-//        fragmentUserBinding.apply {
-//            paginationProgressBar.visibility = INVISIBLE
-//        }
+        fragmentUserBinding.progress.visibility = GONE
     }
 
 
